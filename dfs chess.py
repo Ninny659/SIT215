@@ -23,8 +23,8 @@ class grid:
             self.previous_moves.append([new_x, new_y])
             self.grid = [new_x, new_y]
 
-def is_to_be_explored(to_explore, next_move):
-    for grid in to_explore:
+def has_been_explored(explored, next_move):
+    for grid in explored:
         if grid.previous_moves == next_move.previous_moves:
             return True
     return False
@@ -36,13 +36,13 @@ def dfs(board):
         print("Found a solution! " + current_grid.previous_moves)
         return
 
-    to_explore = []
-    to_explore.append(current_grid)
+    grids_been_to = []
+    grids_been_to.append(current_grid)
     explored = []
     goal_found = False
 
-    while not goal_found and to_explore:
-        current_grid = to_explore.pop()
+    while not goal_found and grids_been_to:
+        current_grid = grids_been_to.pop()
         explored.append(current_grid.previous_moves)
 
         for move in board.possible_moves:
@@ -51,11 +51,11 @@ def dfs(board):
 
             if temp_x > 0 and temp_x <= board.board_size and temp_y > 0 and temp_y <= board.board_size:
                 next_move = grid(board, current_grid, move)
-                if next_move.grid not in current_grid.previous_moves and next_move.previous_moves not in explored and not is_to_be_explored(to_explore, next_move):
+                if next_move.grid not in current_grid.previous_moves and next_move.previous_moves not in explored and not has_been_explored(grids_been_to, next_move):
                     if len(next_move.previous_moves) == ((board.board_size)*(board.board_size)):
                         goal_found = True
                         break
-                    to_explore.append(next_move)
+                    grids_been_to.append(next_move)
 
     if goal_found:
         print("Found a solution! Here is a list of the moves.")
